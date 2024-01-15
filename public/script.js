@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
       data.forEach((item, index) => {
         const imageWrapper = document.createElement('div');
         imageWrapper.classList.add('image-wrapper');
-        imageWrapper.setAttribute('data-id', item.id); 
+        imageWrapper.setAttribute('data-id', item.id);
 
         var doLazyLoad = index > 10;
         imageWrapper.innerHTML = getImageWrapperHTML(item.imageUrl, item.prompt, item.revisedPrompt, item.style, item.quality, item.size, item.id, item.model, doLazyLoad);
@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
-
-document.getElementById('generate').addEventListener('click', function() {
+// TODO: Call moderation endpoint before?
+// https://platform.openai.com/docs/guides/moderation/quickstart
+function submit() {
   var prompt = document.getElementById('prompt').value;
   var style = document.getElementById('style').value;
   var size = document.getElementById('size').value;
@@ -59,7 +60,7 @@ document.getElementById('generate').addEventListener('click', function() {
     var imageWrapper = document.createElement('div');
     imageWrapper.classList.add('spinner');
     document.getElementById('images').prepend(imageWrapper);
-  
+
     fetch('/generate-image', {
       method: 'POST',
       headers: {
@@ -76,10 +77,10 @@ document.getElementById('generate').addEventListener('click', function() {
         imageWrapper.innerHTML = `<p class="error-wrapper">Oops, OpenAI says "${data.error.message}" (Code: ${data.error.code}).</p><p>Your prompt was "<strong>${prompt}</strong>", though the issue may also have been in the unknowable OpenAI-auto-revised prompt.</p>`;
       }
       else {
-        imageWrapper.setAttribute('data-id', data.id); 
+        imageWrapper.setAttribute('data-id', data.id);
         imageWrapper.innerHTML = getImageWrapperHTML(data.imageUrl, prompt, data.revisedPrompt, style, quality, size, data.id, data.model, false);
       }
-  
+
     })
     .catch(error => {
       console.log(error);
@@ -87,7 +88,14 @@ document.getElementById('generate').addEventListener('click', function() {
       imageWrapper.innerHTML = `<p class="error-wrapper">Error generating image.</p>`;
     });
   });
+}
+
+document.getElementById('prompt').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.ctrlKey) {
+    submit();
+  }
 });
+document.getElementById('generate').addEventListener('click', submit);
 
 
 document.addEventListener('click', function(event) {
@@ -96,7 +104,7 @@ document.addEventListener('click', function(event) {
     if (confirmed) {
       const imageWrapper = event.target.closest('.image-wrapper');
       const imageId = imageWrapper.getAttribute('data-id');
-  
+
       fetch(`/delete-image/${imageId}`, {
         method: 'DELETE'
       })
@@ -232,7 +240,7 @@ function flipImage(id) {
 
   const flipTransform = newFlipState ? 'scaleX(-1)' : 'scaleX(1)';
   image.style.transform = `${flipTransform} rotate(${currentAngle}deg)`;
-  
+
   image.setAttribute('data-flipped', newFlipState.toString());
 }
 
@@ -290,7 +298,7 @@ function togglePromptInspirer(event) {
 
     var backdrop = document.createElement('div');
     backdrop.id= 'backdrop';
-  
+
     var closeFunction = function() {
       setInspirerDisplay('none');
     };
@@ -319,7 +327,7 @@ function startSearch(event) {
 
   if (query === null) { return; }
   previousSearch = query;
-  
+
   if (!query) { return; }
 
   const resultsNode = document.getElementById('images')
@@ -342,7 +350,7 @@ function startSearch(event) {
       results.forEach(function(data) {
         var imageWrapper = document.createElement('div');
         imageWrapper.classList.add('image-wrapper');
-        imageWrapper.setAttribute('data-id', data.id); 
+        imageWrapper.setAttribute('data-id', data.id);
         resultsNode.prepend(imageWrapper);
 
         const doLazyLoad = false;
