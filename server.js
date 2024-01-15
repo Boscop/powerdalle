@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = 9000;
 const axios = require('axios');
 const crypto = require('crypto');
 require('dotenv').config();
@@ -41,7 +41,7 @@ db.serialize(() => {
 app.post('/generate-image', async (req, res) => {
 
   const { prompt, style, size, quality } = req.body;
-  
+
   console.log(`Now working on received prompt "${prompt}" with style "${style}", size "${size}", and quality "${quality}"`);
 
   if (!allowedStyles.includes(style)) {
@@ -93,7 +93,7 @@ app.post('/generate-image', async (req, res) => {
     let dateTime;
     let shortPrompt;
     let guid;
-    
+
     axios({
         method: 'get',
         url: imageUrl,
@@ -104,20 +104,20 @@ app.post('/generate-image', async (req, res) => {
         dateTime = getFormattedDateTime();
         shortPrompt = promptToFilenamePart(prompt);
         guid = crypto.randomBytes(4).toString('hex');
-        
+
         const filename = `${dateTime}-${shortPrompt}-${guid}.png`;
         const filepath = path.join(__dirname, 'images', filename);
         localImageUrl = `/images/${filename}`;
 
         const writer = fs.createWriteStream(filepath);
         response.data.pipe(writer);
-        
+
         return new Promise((resolve, reject) => {
           writer.on('finish', () => {
 
             db.run(`
-              INSERT INTO images (imageUrl, prompt, revisedPrompt, style, size, quality, model) 
-              VALUES (?, ?, ?, ?, ?, ?, ?)`, 
+              INSERT INTO images (imageUrl, prompt, revisedPrompt, style, size, quality, model)
+              VALUES (?, ?, ?, ?, ?, ?, ?)`,
               [localImageUrl, prompt, revisedPrompt, style, size, quality, model],
               function(err) {
                 if (err) {
@@ -127,7 +127,7 @@ app.post('/generate-image', async (req, res) => {
                 }
               }
             );
-            
+
         });
           writer.on('error', reject);
         });
@@ -318,7 +318,7 @@ process.on('SIGINT', () => {
 
 function getFormattedDateTime() {
     const pad = (number) => number < 10 ? `0${number}` : number;
-  
+
     const dateTimeNow = new Date();
     const year = dateTimeNow.getUTCFullYear();
     const month = pad(dateTimeNow.getUTCMonth() + 1);
@@ -326,7 +326,7 @@ function getFormattedDateTime() {
     const hours = pad(dateTimeNow.getUTCHours());
     const minutes = pad(dateTimeNow.getUTCMinutes());
     const seconds = pad(dateTimeNow.getUTCSeconds());
-  
+
     return `${year}-${month}-${date}-${hours}-${minutes}-${seconds}`;
 }
 

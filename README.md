@@ -5,10 +5,10 @@ With Power Dall-E, you can launch multiple generations at once in any number, wh
 
 This app does not connect to any server outside of your local one and OpenAI. Be aware of the costs though, as every API call is paid to OpenAI as per their usual pricing (note I'm not part of that transaction nor do I make money from it, it's just a local way for you to connect via your OpenAI API key).
 
-![Screenshot](docs/screenshot.png)  
+![Screenshot](docs/screenshot.png)
 _As you scroll down, your older creations also show._
 
-[![Video](docs/thumb.png)](https://www.youtube.com/watch?v=2afhxu7XD5Q)  
+[![Video](docs/thumb.png)](https://www.youtube.com/watch?v=2afhxu7XD5Q)
 _Overview video_
 
 # Installation
@@ -18,7 +18,7 @@ _Overview video_
 3. Create a name-less file ".env" in the project root and put into it [your OpenAI API](https://platform.openai.com/api-keys) key by writing: _OPENAI_API_KEY=yourapikey_
 4. Navigate to the project via the command line, and type *npm install*
 5. Then in the same command line, type *npm start*
-6. Open http://localhost:3000 in your browser. Have fun!
+6. Open http://localhost:9000 in your browser. Have fun!
 
 _This project makes no guarantees for being bug-free, use at your own risk, and keep in mind that API calls cost money (see the [OpenAI costs dashboard](https://platform.openai.com/usage) and the [pricing table](https://openai.com/pricing))._
 
@@ -26,16 +26,16 @@ _This project makes no guarantees for being bug-free, use at your own risk, and 
 
 Power Dall-E is integrated with Prompt Inspirer (also available at [PromptInspirer.com](https://promptinspirer.com/)), which includes over 10,000 items you can drag & drop together to make prompts.
 
-[![Video](docs/thumb-inspirer.png)](https://www.youtube.com/watch?v=g2T3LDPkV-0)  
+[![Video](docs/thumb-inspirer.png)](https://www.youtube.com/watch?v=g2T3LDPkV-0)
 _Prompt Inspirer overview video_
 
 # Options
 
-Info such as the prompt used are stored in a local database. If you want to additionally save a JSON file with such info with each image, add this to your ".env" file:  
+Info such as the prompt used are stored in a local database. If you want to additionally save a JSON file with such info with each image, add this to your ".env" file:
 SAVE_JSON_WITH_IMAGES=true
 
-To switch from default model "dall-e-3" to another, add e.g. this to the ".env" file and restart the server (though size dropdowns and such will only properly work for the default model):  
+To switch from default model "dall-e-3" to another, add e.g. this to the ".env" file and restart the server (though size dropdowns and such will only properly work for the default model):
 MODEL=dall-e-2
 
-To change the maximum number of images served at the start (the default is 1000), use e.g.:  
+To change the maximum number of images served at the start (the default is 1000), use e.g.:
 MAX_IMAGES_TO_SERVE_AT_START=2000
